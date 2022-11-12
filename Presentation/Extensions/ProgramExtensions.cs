@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Service.Showcase.Application;
+using Service.Showcase.Infrastructure;
 
 namespace Service.Showcase.Presentation.Extensions;
-
-// using Infrastructure;
 
 [ExcludeFromCodeCoverage]
 public static class ProgramExtensions
@@ -70,7 +69,7 @@ public static class ProgramExtensions
 
         #region Project Dependencies
 
-        // _ = builder.Services.AddInfrastructure();
+        _ = builder.Services.AddInfrastructure();
         _ = builder.Services.AddApplication();
 
         #endregion Project Dependencies

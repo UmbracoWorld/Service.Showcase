@@ -7,31 +7,34 @@ using Extensions;
 using Microsoft.EntityFrameworkCore;
 using SimpleDateTimeProvider;
 
-internal class EntityFrameworkMovieReviewsRepository : IShowcaseRepository
+internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
 {
     private readonly ShowcaseDbContext _context;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IMapper _mapper;
 
-    public EntityFrameworkMovieReviewsRepository(ShowcaseDbContext context, IDateTimeProvider dateTimeProvider,
-                                                 IMapper mapper)
+    public EntityFrameworkShowcaseRepository(ShowcaseDbContext context, IDateTimeProvider dateTimeProvider,
+        IMapper mapper, IHostEnvironment environment)
     {
         _context = context;
         _dateTimeProvider = dateTimeProvider;
         _mapper = mapper;
 
-        if (_context != null)
-        {
-            _ = _context.Database.EnsureDeleted();
-            _ = _context.Database.EnsureCreated();
-            _ = _context.AddData();
-        }
+        // if (!environment.IsDevelopment()) 
+        //     return;
+        //
+        // _ = _context.Database.EnsureCreated();
+        // _ = _context.AddData();
+
     }
-    
 
     public virtual async Task<List<Showcase>> GetShowcases(CancellationToken cancellationToken)
     {
-        var authors = await _context.Showcases.ToListAsync(cancellationToken);
+        var authors = await _context.Showcases
+            .Include(x => x.Features)
+            .Include(x => x.Hostings)
+            .Include(x => x.Sectors)
+            .ToListAsync(cancellationToken);
 
         return _mapper.Map<List<Showcase>>(authors);
     }
@@ -39,8 +42,8 @@ internal class EntityFrameworkMovieReviewsRepository : IShowcaseRepository
     public virtual async Task<Showcase> GetShowcaseById(Guid id, CancellationToken cancellationToken)
     {
         var author = await _context.Showcases
-                         .Where(r => r.Id == id)
-                         .FirstOrDefaultAsync(cancellationToken);
+            .Where(r => r.Id == id)
+            .FirstOrDefaultAsync(cancellationToken);
 
         return _mapper.Map<Showcase>(author);
     }
@@ -49,6 +52,4 @@ internal class EntityFrameworkMovieReviewsRepository : IShowcaseRepository
     {
         return await _context.Showcases.AsNoTracking().AnyAsync(a => a.Id == id, cancellationToken);
     }
-    
-
 }

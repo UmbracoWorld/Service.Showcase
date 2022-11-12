@@ -1,5 +1,7 @@
 ﻿using Service.Showcase.Presentation.Endpoints;
 using Serilog;
+using Service.Showcase.Infrastructure.Databases.Showcases;
+using Service.Showcase.Infrastructure.Databases.Showcases.Extensions;
 using Service.Showcase.Presentation.Extensions;
 
 
@@ -10,6 +12,15 @@ var builder = WebApplication
 var app = builder
     .Build()
     .ConfigureApplication();
+
+if (app.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        services.GetService<ShowcaseDbContext>()?.AddData();
+    }
+}
 
 _ = app.MapEndpoints();
 

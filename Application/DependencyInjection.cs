@@ -1,4 +1,6 @@
-﻿namespace Service.Showcase.Application;
+﻿using Service.Showcase.Application.Showcase;
+
+namespace Service.Showcase.Application;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
