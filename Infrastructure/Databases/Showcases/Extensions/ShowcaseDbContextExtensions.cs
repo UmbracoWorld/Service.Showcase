@@ -10,7 +10,7 @@ internal static class ShowcaseDbContextExtensions
     {
 
         var showcases = new Faker<Showcase>()
-            .RuleFor(a => a.Id, f => f.Random.Guid())
+            .RuleFor(a => a.Id, f => f.Random.Int(0, 1000))
             .RuleFor(a => a.Title, f => f.Company.CompanyName())
             .RuleFor(a => a.Summary, f => f.Company.Bs())
             .RuleFor(a => a.Description, f => f.Commerce.ProductDescription())
@@ -49,7 +49,7 @@ internal static class ShowcaseDbContextExtensions
         var hostingList = new[]
             { "leisure", "hobby", "tourism", "health", "b2b" };
         var hosting = new Faker<Sector>()
-            .RuleFor(x => x.Id, f => f.Random.Guid())
+            .RuleFor(x => x.Id, f => f.Random.Int())
             .RuleFor(x => x.Value, f => f.PickRandom(hostingList));
 
         return hosting.Generate(2);
@@ -60,7 +60,7 @@ internal static class ShowcaseDbContextExtensions
         var hostingList = new[]
             { "azure", "aws", "gcloud", "cloud", "umbhost" };
         var hosting = new Faker<Hosting>()
-            .RuleFor(x => x.Id, f => f.Random.Guid())
+            .RuleFor(x => x.Id, f => f.Random.Int())
             .RuleFor(x => x.Value, f => f.PickRandom(hostingList));
 
         return hosting.Generate(2);
@@ -70,7 +70,7 @@ internal static class ShowcaseDbContextExtensions
         var featuresList = new[]
             { "accessibility", "design", "ecommerce", "editor experience", "integrations", "headless" };
         var features = new Faker<Feature>()
-            .RuleFor(x => x.Id, f => f.Random.Guid())
+            .RuleFor(x => x.Id, f => f.Random.Int())
             .RuleFor(x => x.Value, f => f.PickRandom(featuresList));
         
         return features.Generate(2);

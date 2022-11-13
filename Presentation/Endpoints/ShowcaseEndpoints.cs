@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
+using HashidsNet;
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
+using Service.Showcase.Application.Common;
 using Service.Showcase.Application.Showcase.Commands.CreateShowcase;
-using Service.Showcase.Application.Showcase.Queries.CreateShowcase;
 using Service.Showcase.Application.Showcase.Queries.GetShowcaseById;
 using Service.Showcase.Application.Showcase.Queries.GetShowcases;
 using Service.Showcase.Presentation.Endpoints.Requests;
@@ -23,11 +24,11 @@ public static class ServiceEndpoints
             .Produces(200);
 
         _ = app.MapGet("/api/showcase",
-                async (IMediator mediator) => Results.Ok(await mediator.Send(new GetShowcasesQuery())))
+                async (int? pageSize, int? currentPage, IMediator mediator) 
+                    => Results.Ok(await mediator.Send(new GetShowcasesQuery() { CurrentPage = currentPage, PageSize = pageSize})))
             .WithTags("Showcase")
             .WithMetadata(new SwaggerOperationAttribute("Lookup all showcases"))
-            .Produces<List<Application.Showcase.Entities.Showcase>>(StatusCodes.Status200OK,
-                contentType: MediaTypeNames.Application.Json)
+            .Produces<PaginatedList<Application.Showcase.Entities.Showcase>>(StatusCodes.Status200OK, contentType: MediaTypeNames.Application.Json)
             .Produces<ApiError>(StatusCodes.Status500InternalServerError, contentType: MediaTypeNames.Application.Json);
 
         _ = app.MapPost("/api/showcase",
@@ -56,9 +57,9 @@ public static class ServiceEndpoints
 
 
         _ = app.MapGet(
-                "/api/showcases/{id:guid}",
-                async (IMediator mediator, Guid id) =>
-                    Results.Ok(await mediator.Send(new GetShowcaseByIdQuery { Id = id })))
+                "/api/showcases/{id}",
+                async (IMediator mediator, string id) =>
+                    Results.Ok(await mediator.Send(new GetShowcaseByIdQuery { Id =  id })))
             .WithTags("Showcase")
             .WithMetadata(new SwaggerOperationAttribute("Lookup a showcase by their Id"))
             .Produces<Application.Showcase.Entities.Showcase>(StatusCodes.Status200OK,

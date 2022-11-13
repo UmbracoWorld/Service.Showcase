@@ -5,5 +5,5 @@ using MediatR;
 
 public class GetShowcaseByIdQuery : IRequest<Entities.Showcase>
 {
-    [Required] public Guid Id { get; init; }
+    [Required] public string Id { get; init; }
 }

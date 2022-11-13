@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using Service.Showcase.Application.Showcase.Commands.CreateShowcase;
 
-namespace Service.Showcase.Application.Showcase.Queries.CreateShowcase;
+namespace Service.Showcase.Application.Showcase.Commands.CreateShowcase;
 
 public class CreateShowcaseValidator : AbstractValidator<CreateShowcaseCommand>
 {

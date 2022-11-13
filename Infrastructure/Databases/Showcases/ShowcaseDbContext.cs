@@ -27,20 +27,6 @@ internal class ShowcaseDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        // // Create the join between showcase + feature
-        // modelBuilder.Entity<ShowcaseFeature>()
-        //     .HasKey(sf => new { sf.FeatureId, sf.ShowcaseId });
-        //
-        // modelBuilder.Entity<ShowcaseFeature>()
-        //     .HasOne(sf => sf.Showcase)
-        //     .WithMany(sf => sf.Features)
-        //     .HasForeignKey(sf => sf.ShowcaseId);
-        //
-        // modelBuilder.Entity<ShowcaseFeature>()
-        //     .HasOne(sf => sf.Feature)
-        //     .WithMany(sf => sf.ShowcaseFeatures)
-        //     .HasForeignKey(sf => sf.FeatureId);
-
         modelBuilder.Entity<Feature>()
             .Property(x => x.Id)
             .ValueGeneratedOnAdd()

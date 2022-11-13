@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using HashidsNet;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -69,8 +70,11 @@ public static class ProgramExtensions
 
         #region Project Dependencies
 
+        builder.Services.AddSingleton<IHashids>(new Hashids("randomsecretsalt", 8));
+        
         _ = builder.Services.AddInfrastructure();
         _ = builder.Services.AddApplication();
+        
 
         #endregion Project Dependencies
 

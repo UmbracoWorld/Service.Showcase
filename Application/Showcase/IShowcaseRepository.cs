@@ -8,7 +8,7 @@ using Entities;
 public interface IShowcaseRepository
 {
     Task<List<Showcase>> GetShowcases(CancellationToken cancellationToken);
-    Task<Showcase> GetShowcaseById(Guid id, CancellationToken cancellationToken);
-    Task<bool> ShowcaseExists(Guid id, CancellationToken cancellationToken);
+    Task<Showcase> GetShowcaseById(int id, CancellationToken cancellationToken);
+    Task<bool> ShowcaseExists(int id, CancellationToken cancellationToken);
     Task<Showcase> CreateShowcase(CreateShowcaseCommand showcase, CancellationToken cancellationToken);
 }

@@ -1,5 +1,5 @@
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Service.Showcase.Application.Showcase.Commands.CreateShowcase;
-using Service.Showcase.Application.Showcase.Queries.CreateShowcase;
 using Service.Showcase.Infrastructure.Databases.Showcases.Models;
 
 namespace Service.Showcase.Infrastructure.Databases.Showcases;
@@ -22,26 +22,28 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
 
     public virtual async Task<List<Showcase>> GetShowcases(CancellationToken cancellationToken)
     {
-        var authors = await _context.Showcases
+        var showcases = await _context.Showcases
             .Include(x => x.Features)
-            // .Include(x => x.Hostings)
-            // .Include(x => x.Sectors)
+            .Include(x => x.Hostings)
+            .Include(x => x.Sectors)
             .ToListAsync(cancellationToken);
 
-        return _mapper.Map<List<Showcase>>(authors);
+        return _mapper.Map<List<Showcase>>(showcases);
     }
 
-    public virtual async Task<Showcase> GetShowcaseById(Guid id, CancellationToken cancellationToken)
+    public virtual async Task<Showcase> GetShowcaseById(int id, CancellationToken cancellationToken)
     {
         var author = await _context.Showcases
             .Where(r => r.Id == id)
             .Include(x => x.Features)
+            .Include(x => x.Hostings)
+            .Include(x => x.Sectors)
             .FirstOrDefaultAsync(cancellationToken);
 
         return _mapper.Map<Showcase>(author);
     }
 
-    public virtual async Task<bool> ShowcaseExists(Guid id, CancellationToken cancellationToken)
+    public virtual async Task<bool> ShowcaseExists(int id, CancellationToken cancellationToken)
     {
         return await _context.Showcases.AsNoTracking().AnyAsync(a => a.Id == id, cancellationToken);
     }
@@ -58,10 +60,23 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
             MajorVersion = showcase.MajorVersion,
             MinorVersion = showcase.MinorVersion,
             PatchVersion = showcase.PatchVersion,
+            DateCreated = DateTime.Now,
+            DateModified = DateTime.Now,
         };
         
         var entityEntry = await _context.AddAsync(entityShowcase, cancellationToken);
 
+        CreateOrAddFeature(showcase, entityEntry, entityShowcase);
+        CreateOrAddSector(showcase, entityEntry, entityShowcase);
+        CreateOrAddHosting(showcase, entityEntry, entityShowcase);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<Showcase>(entityEntry.Entity);
+    }
+
+    private void CreateOrAddFeature(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    {
         foreach (var feature in showcase.Features)
         {
             var exists = _context.Feature.FirstOrDefault(x => x.Value == feature);
@@ -76,12 +91,41 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
                 _context.Feature.Add(newFeature);
             }
         }
+    }
 
-        // after the loop above, enitityShowcase features is 2 (as it should be)
-        // after adding, it's actually 4...
+    private void CreateOrAddSector(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    {
+        foreach (var sector in showcase.Sectors)
+        {
+            var exists = _context.Sector.FirstOrDefault(x => x.Value == sector);
+            if (exists is not null)
+            {
+                entityEntry.Entity.Sectors.Add(exists);
+            }
+            else
+            {
+                var newSector = new Sector { Value = sector };
+                newSector.Showcases.Add(entityShowcase);
+                _context.Sector.Add(newSector);
+            }
+        }
+    }
 
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<Showcase>(entityEntry.Entity);
+    private void CreateOrAddHosting(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    {
+        foreach (var hosting in showcase.Hostings)
+        {
+            var exists = _context.Hosting.FirstOrDefault(x => x.Value == hosting);
+            if (exists is not null)
+            {
+                entityEntry.Entity.Hostings.Add(exists);
+            }
+            else
+            {
+                var newHosting = new Hosting { Value = hosting };
+                newHosting.Showcases.Add(entityShowcase);
+                _context.Hosting.Add(newHosting);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Service.Showcase.Infrastructure.Databases.Showcases.Models;
 
-internal record Sector : Entity
+public record Sector : Entity
 {
     public string Value { get; set; }
+    public ICollection<Showcase> Showcases { get; set; } = new HashSet<Showcase>();
 }
