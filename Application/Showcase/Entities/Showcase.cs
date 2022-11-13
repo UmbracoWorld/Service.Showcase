@@ -1,4 +1,3 @@
-using AutoMapper.Features;
 using Service.Showcase.Application.Common.Entities;
 
 namespace Service.Showcase.Application.Showcase.Entities;
@@ -22,5 +21,7 @@ public record Showcase : Entity
     public ICollection<string> Hostings { get; set; }
     
     public Guid AuthorId { get; set; }
+    
+    public string ImageSource { get; set; }
 }
 

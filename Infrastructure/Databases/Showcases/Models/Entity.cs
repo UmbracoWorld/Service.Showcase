@@ -1,6 +1,6 @@
 namespace Service.Showcase.Infrastructure.Databases.Showcases.Models;
 
-internal abstract record Entity
+public abstract record Entity
 {
     public Guid Id { get; init; }
     public DateTime DateCreated { get; init; }

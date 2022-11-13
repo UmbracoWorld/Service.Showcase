@@ -8,16 +8,16 @@ using Entities;
 
 public class GetShowcaseByIdHandler : IRequestHandler<GetShowcaseByIdQuery, Showcase>
 {
-    private readonly IShowcaseRepository repository;
+    private readonly IShowcaseRepository _repository;
 
     public GetShowcaseByIdHandler(IShowcaseRepository repository)
     {
-        this.repository = repository;
+        _repository = repository;
     }
 
     public async Task<Showcase> Handle(GetShowcaseByIdQuery request, CancellationToken cancellationToken)
     {
-        var result = await this.repository.GetShowcaseById(request.Id, cancellationToken);
+        var result = await _repository.GetShowcaseById(request.Id, cancellationToken);
 
         NotFoundException.ThrowIfNull(result);
 

@@ -13,14 +13,14 @@ var app = builder
     .Build()
     .ConfigureApplication();
 
-if (app.Environment.IsDevelopment())
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        services.GetService<ShowcaseDbContext>()?.AddData();
-    }
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     using (var scope = app.Services.CreateScope())
+//     {
+//         var services = scope.ServiceProvider;
+//         services.GetService<ShowcaseDbContext>()?.AddData();
+//     }
+// }
 
 _ = app.MapEndpoints();
 

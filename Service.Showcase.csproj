@@ -11,6 +11,7 @@
     <PropertyGroup Condition=" '$(RunConfiguration)' == 'Service.Showcase' " />
 
     <ItemGroup>
+        <Folder Include="Application\Showcase\Commands" />
         <Folder Include="Presentation" />
 
     </ItemGroup>

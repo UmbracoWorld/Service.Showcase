@@ -1,6 +1,6 @@
 namespace Service.Showcase.Infrastructure.Databases.Showcases.Models;
 
-internal record Showcase : Entity
+public record Showcase : Entity
 {
     public string Title { get; set; }
     
@@ -13,12 +13,14 @@ internal record Showcase : Entity
     public int MinorVersion { get; set; }
     
     public int PatchVersion { get; set; }
-    
-    public ICollection<Feature> Features { get; set; }
-    
-    public ICollection<Sector> Sectors { get; set; }
-    
-    public ICollection<Hosting> Hostings { get; set; }
+
+    public ICollection<Feature> Features { get; set; } = new HashSet<Feature>();
+
+    // public ICollection<Sector> Sectors { get; set; }
+    //
+    // public ICollection<Hosting> Hostings { get; set; }
     
     public Guid AuthorId { get; set; }
+    
+    public string? ImageSource { get; set; }
 }

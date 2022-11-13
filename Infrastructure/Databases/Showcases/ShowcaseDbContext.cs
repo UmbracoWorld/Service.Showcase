@@ -11,7 +11,10 @@ internal class ShowcaseDbContext : DbContext
     }
 
     public DbSet<Showcase> Showcases { get; set; }
-
+    public DbSet<Sector> Sector { get; set; }
+    public DbSet<Hosting> Hosting { get; set; }
+    public DbSet<Feature> Feature { get; set; }
+        
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -23,18 +26,35 @@ internal class ShowcaseDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        // // Create the join between showcase + feature
+        // modelBuilder.Entity<ShowcaseFeature>()
+        //     .HasKey(sf => new { sf.FeatureId, sf.ShowcaseId });
+        //
+        // modelBuilder.Entity<ShowcaseFeature>()
+        //     .HasOne(sf => sf.Showcase)
+        //     .WithMany(sf => sf.Features)
+        //     .HasForeignKey(sf => sf.ShowcaseId);
+        //
+        // modelBuilder.Entity<ShowcaseFeature>()
+        //     .HasOne(sf => sf.Feature)
+        //     .WithMany(sf => sf.ShowcaseFeatures)
+        //     .HasForeignKey(sf => sf.FeatureId);
 
-        modelBuilder.Entity<Showcase>()
-            .HasMany(pr => pr.Features)
-            .WithOne(x => x.Showcase);
+        modelBuilder.Entity<Feature>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .IsRequired();
         
-        modelBuilder.Entity<Showcase>()
-            .HasMany(pr => pr.Sectors)
-            .WithOne(x => x.Showcase);
+        modelBuilder.Entity<Sector>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .IsRequired();
         
-        modelBuilder.Entity<Showcase>()
-            .HasMany(pr => pr.Hostings)
-            .WithOne(x => x.Showcase);
+        modelBuilder.Entity<Hosting>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd()
+            .IsRequired();
 
         _ = modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }

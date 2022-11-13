@@ -3,5 +3,4 @@
 internal record Hosting : Entity
 {
     public string Value { get; set; }
-    public Showcase Showcase { get; set; }
 }
