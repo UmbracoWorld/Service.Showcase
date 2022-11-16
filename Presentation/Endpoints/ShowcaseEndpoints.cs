@@ -34,7 +34,7 @@ public static class ServiceEndpoints
         _ = app.MapPost("/api/showcase",
                 async (CreateShowcaseRequest showcaseRequest, HttpRequest httpRequest, IMediator mediator) =>
                 {
-                    var command = new CreateShowcaseCommand()
+                    var command = new CreateShowcaseCommand
                     {
                         Title = showcaseRequest.Title,
                         Summary = showcaseRequest.Summary,
@@ -47,6 +47,8 @@ public static class ServiceEndpoints
                         MajorVersion = showcaseRequest.MajorVersion,
                         MinorVersion = showcaseRequest.MinorVersion,
                         PatchVersion = showcaseRequest.PatchVersion,
+                        ImageHighlights = showcaseRequest.ImageHighlights,
+                        PublicUrl = showcaseRequest.PublicUrl
                     };
                     return Results.Created(httpRequest.GetEncodedUrl(), await mediator.Send(command));
                 })

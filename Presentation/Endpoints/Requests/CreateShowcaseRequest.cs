@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Service.Showcase.Infrastructure.Databases.Showcases.Models;
 
 namespace Service.Showcase.Presentation.Endpoints.Requests;
 
@@ -11,8 +12,19 @@ public class CreateShowcaseRequest
     [Required] public int MinorVersion { get; set; }
     [Required] public int PatchVersion { get; set; }
     [Required] public Guid AuthorId { get; set; }
+    
+    public string PublicUrl { get; set; }
     public IEnumerable<string> Features { get; set; }
     public ICollection<string> Sectors { get; set; }
     public ICollection<string> Hostings { get; set; }
     public string ImageSource { get; set; }
+    
+    public IEnumerable<ImageHighlightRequest> ImageHighlights { get; set; }
+ }
+
+public class ImageHighlightRequest
+{
+    public string Source { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
 }

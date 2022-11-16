@@ -8,6 +8,8 @@ public record Showcase : Entity
 
     public string Description { get; set; }
 
+    public string? PublicUrl { get; set; }
+
     public int MajorVersion { get; set; }
 
     public int MinorVersion { get; set; }
@@ -23,4 +25,6 @@ public record Showcase : Entity
     public Guid AuthorId { get; set; }
 
     public string? ImageSource { get; set; }
+
+    public ICollection<ImageHighlight> ImageHighlights { get; set; } = new HashSet<ImageHighlight>();
 }

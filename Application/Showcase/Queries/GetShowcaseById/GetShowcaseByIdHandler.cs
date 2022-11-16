@@ -1,4 +1,3 @@
-
 using HashidsNet;
 
 namespace Service.Showcase.Application.Showcase.Queries.GetShowcaseById;
@@ -22,12 +21,13 @@ public class GetShowcaseByIdHandler : IRequestHandler<GetShowcaseByIdQuery, Show
 
     public async Task<Showcase> Handle(GetShowcaseByIdQuery request, CancellationToken cancellationToken)
     {
-        var decodedId = _hashids.Decode(request.Id);
+        var tryDecodeSingle = _hashids.TryDecodeSingle(request.Id, out var id);
+        if (!tryDecodeSingle)
+        {
+            throw new NotFoundException("Showcase not found");
+        }
 
-
-        NotFoundException.ThrowIfNull(decodedId);
-
-        var result = await _repository.GetShowcaseById(decodedId.First(), cancellationToken);
+        var result = await _repository.GetShowcaseById(id, cancellationToken);
 
         NotFoundException.ThrowIfNull(result);
 

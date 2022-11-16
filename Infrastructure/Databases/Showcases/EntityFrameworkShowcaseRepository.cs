@@ -26,6 +26,8 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
             .Include(x => x.Features)
             .Include(x => x.Hostings)
             .Include(x => x.Sectors)
+            .Include(x => x.ImageHighlights)
+            .OrderByDescending(x => x.DateCreated)
             .ToListAsync(cancellationToken);
 
         return _mapper.Map<List<Showcase>>(showcases);
@@ -38,6 +40,7 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
             .Include(x => x.Features)
             .Include(x => x.Hostings)
             .Include(x => x.Sectors)
+            .Include(x => x.ImageHighlights)
             .FirstOrDefaultAsync(cancellationToken);
 
         return _mapper.Map<Showcase>(author);
@@ -62,8 +65,10 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
             PatchVersion = showcase.PatchVersion,
             DateCreated = DateTime.Now,
             DateModified = DateTime.Now,
+            ImageHighlights = CreateImageHighlights(showcase),
+            PublicUrl = showcase.PublicUrl
         };
-        
+
         var entityEntry = await _context.AddAsync(entityShowcase, cancellationToken);
 
         CreateOrAddFeature(showcase, entityEntry, entityShowcase);
@@ -75,7 +80,18 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
         return _mapper.Map<Showcase>(entityEntry.Entity);
     }
 
-    private void CreateOrAddFeature(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    private static List<Models.ImageHighlight> CreateImageHighlights(CreateShowcaseCommand showcase)
+    {
+        return showcase.ImageHighlights.Select(x => new Models.ImageHighlight()
+        {
+            Title = x.Title, 
+            Description = x.Description, 
+            Source = x.Source
+        }).ToList();
+    }
+
+    private void CreateOrAddFeature(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry,
+        Models.Showcase entityShowcase)
     {
         foreach (var feature in showcase.Features)
         {
@@ -93,7 +109,8 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
         }
     }
 
-    private void CreateOrAddSector(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    private void CreateOrAddSector(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry,
+        Models.Showcase entityShowcase)
     {
         foreach (var sector in showcase.Sectors)
         {
@@ -111,7 +128,8 @@ internal class EntityFrameworkShowcaseRepository : IShowcaseRepository
         }
     }
 
-    private void CreateOrAddHosting(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry, Models.Showcase entityShowcase)
+    private void CreateOrAddHosting(CreateShowcaseCommand showcase, EntityEntry<Models.Showcase> entityEntry,
+        Models.Showcase entityShowcase)
     {
         foreach (var hosting in showcase.Hostings)
         {

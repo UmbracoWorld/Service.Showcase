@@ -1,10 +1,12 @@
 ﻿using MediatR;
+using Service.Showcase.Presentation.Endpoints.Requests;
 
 namespace Service.Showcase.Application.Showcase.Commands.CreateShowcase;
 
 public class CreateShowcaseCommand : IRequest<Entities.Showcase>
 {
     public string Title { get; set; }
+    public string PublicUrl { get; set; }
     public string Summary { get; set; }
     public string Description { get; set; }
     public int MajorVersion { get; set; }
@@ -15,4 +17,6 @@ public class CreateShowcaseCommand : IRequest<Entities.Showcase>
     public IEnumerable<string> Sectors { get; set; }
     public IEnumerable<string> Hostings { get; set; }
     public string ImageSource { get; set; }
+
+    public IEnumerable<ImageHighlightRequest> ImageHighlights { get; set; }
 }
